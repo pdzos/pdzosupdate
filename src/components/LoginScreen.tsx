@@ -129,18 +129,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
             </button>
           </form>
 
-          {/* First time default password note */}
-          {isDefault && (
-            <div className="p-3.5 rounded-xl bg-blue-950/30 border border-blue-500/20 text-[11px] text-slate-300 leading-relaxed text-center">
-              <span className="text-blue-400 font-bold block mb-0.5">Initial Default Password:</span>
-              <code className="bg-black/50 px-2 py-0.5 rounded font-mono text-cyan-300 text-xs border border-blue-900/50">
-                {DEFAULT_PASSWORD}
-              </code>
-              <p className="text-[10px] text-slate-400 mt-1">
-                You can change this password to your own custom password anytime in <strong>Settings</strong>.
-              </p>
-            </div>
-          )}
+          {/* Cloudflare Secrets / Default Password Note */}
+          <div className="p-3.5 rounded-xl bg-blue-950/30 border border-blue-500/20 text-[11px] text-slate-300 leading-relaxed text-center space-y-1">
+            {isDefault ? (
+              <>
+                <span className="text-blue-400 font-bold block">Initial Default Password:</span>
+                <code className="bg-black/50 px-2 py-0.5 rounded font-mono text-cyan-300 text-xs border border-blue-900/50">
+                  {DEFAULT_PASSWORD}
+                </code>
+              </>
+            ) : (
+              <span className="text-emerald-400 font-mono font-semibold block flex items-center justify-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Cloudflare / Custom Secret Configured
+              </span>
+            )}
+            <p className="text-[10px] text-slate-400 pt-0.5">
+              💡 <strong>Cloudflare Secret:</strong> You can set <code className="text-cyan-400 font-mono">ADMIN_PASSWORD</code> or <code className="text-cyan-400 font-mono">VITE_ADMIN_PASSWORD</code> in Cloudflare Pages <em>Settings → Variables and secrets</em>.
+            </p>
+          </div>
 
           {/* Security Footer Note */}
           <div className="text-center pt-2 border-t border-slate-800/80">
