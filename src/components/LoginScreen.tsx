@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { HexLogo } from './HexLogo';
-import { verifyPassword, setAuthenticated, checkServerSecretStatus } from '../utils/auth';
-import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle, KeyRound, Sparkles } from 'lucide-react';
+import { verifyPassword, setAuthenticated } from '../utils/auth';
+import { Lock, Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle, KeyRound } from 'lucide-react';
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
@@ -12,13 +12,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasCloudflareSecret, setHasCloudflareSecret] = useState(true);
-
-  useEffect(() => {
-    checkServerSecretStatus().then(status => {
-      setHasCloudflareSecret(status.isConfigured);
-    });
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +29,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
         setAuthenticated();
         onLoginSuccess();
       } else {
-        setError('Incorrect password. Please enter the password set in Cloudflare.');
+        setError('Incorrect password. Please enter the exact password set in Cloudflare Variables and secrets.');
       }
     } catch {
       setError('An error occurred during verification.');
@@ -83,7 +76,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                     setPassword(e.target.value);
                     if (error) setError(null);
                   }}
-                  placeholder="Enter Cloudflare secret password..."
+                  placeholder="Enter your Cloudflare ADMIN_PASSWORD..."
                   className="w-full pl-4 pr-11 py-3 bg-[#0a0b12] border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/40 font-mono transition-all"
                 />
                 <button
@@ -132,10 +125,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
           <div className="p-3.5 rounded-xl bg-blue-950/30 border border-blue-500/20 text-[11px] text-slate-300 leading-relaxed text-center space-y-1">
             <span className="text-emerald-400 font-mono font-semibold block flex items-center justify-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Cloudflare Secret Password Verification
+              Protected by Cloudflare ADMIN_PASSWORD
             </span>
             <p className="text-[10px] text-slate-400 pt-0.5">
-              Enter the secret password configured in Cloudflare Pages (under <em>Variables and secrets</em>).
+              Only the secret password you configured in Cloudflare Pages will unlock this dashboard.
             </p>
           </div>
 

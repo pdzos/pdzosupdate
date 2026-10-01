@@ -1,14 +1,15 @@
 // Password authentication and session manager for HexOS Update Center
-// Supports Cloudflare Pages "Variables and secrets" (ADMIN_PASSWORD or VITE_ADMIN_PASSWORD)
+// Directly connects to Cloudflare Pages "Variables and secrets" -> ADMIN_PASSWORD
+
+declare const __ADMIN_PASSWORD__: string;
 
 const AUTH_STORAGE_KEY = 'hexos_admin_password_hash_v1';
 const SESSION_STORAGE_KEY = 'hexos_admin_session_token_v1';
 
-// Default initial fallback password ONLY if no Cloudflare secret or custom password is set
-const DEFAULT_PASSWORD = 'admin123';
-
-// Vite environment variable injected during Cloudflare Pages build (VITE_ADMIN_PASSWORD)
-const CLOUDFLARE_VITE_PASSWORD = ((import.meta as any).env?.VITE_ADMIN_PASSWORD || '').trim();
+// Injected during Cloudflare Pages build from process.env.ADMIN_PASSWORD
+export const CLOUDFLARE_ENV_PASSWORD =
+  (typeof __ADMIN_PASSWORD__ !== 'undefined' ? __ADMIN_PASSWORD__ : '') ||
+  ((import.meta as any).env?.VITE_ADMIN_PASSWORD || '').trim();
 
 /**
  * SHA-256 hash using native Web Crypto API
@@ -29,40 +30,19 @@ export function isAuthenticated(): boolean {
 }
 
 /**
- * Checks if Cloudflare Pages server has ADMIN_PASSWORD configured
- */
-export async function checkServerSecretStatus(): Promise<{ isConfigured: boolean }> {
-  try {
-    const res = await fetch('/verify-admin', { method: 'GET' });
-    if (res.ok) {
-      const data = await res.json();
-      return { isConfigured: !!data.configured };
-    }
-  } catch {}
-
-  try {
-    const res2 = await fetch('/api/verify-password', { method: 'GET' });
-    if (res2.ok) {
-      const data2 = await res2.json();
-      return { isConfigured: !!data2.configured };
-    }
-  } catch {}
-
-  return { isConfigured: !!CLOUDFLARE_VITE_PASSWORD };
-}
-
-/**
  * Verifies password against:
- * 1. Cloudflare Pages Function (/verify-admin or /api/verify-password) with ADMIN_PASSWORD
- * 2. Cloudflare Pages build variable (VITE_ADMIN_PASSWORD)
+ * 1. Cloudflare Pages Function (/verify-admin) checking context.env.ADMIN_PASSWORD
+ * 2. Cloudflare Pages build variable (__ADMIN_PASSWORD__) injected from process.env.ADMIN_PASSWORD
  * 3. LocalStorage customized password hash
- * 4. Fallback to admin123 ONLY if no Cloudflare secret is configured
+ *
+ * NOTE: There is ZERO hardcoded fallback like admin123.
+ * Only the password you set in Cloudflare will open the website!
  */
 export async function verifyPassword(password: string): Promise<boolean> {
   if (!password) return false;
   const trimmed = password.trim();
 
-  // 1. Try Cloudflare Pages Function at /verify-admin
+  // 1. Try Cloudflare Pages serverless Function (/verify-admin)
   try {
     const res = await fetch('/verify-admin', {
       method: 'POST',
@@ -70,40 +50,24 @@ export async function verifyPassword(password: string): Promise<boolean> {
       body: JSON.stringify({ password: trimmed }),
     });
 
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
       if (data.success === true) {
         return true;
       }
       if (data.fallback !== true) {
-        // Cloudflare function explicitly verified the secret password and rejected it
+        // Cloudflare server function explicitly matched against ADMIN_PASSWORD and rejected it
         return false;
       }
     }
-  } catch {}
+  } catch {
+    // Proceed to build-injected variable check
+  }
 
-  // 1b. Try secondary Cloudflare Function at /api/verify-password
-  try {
-    const res = await fetch('/api/verify-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: trimmed }),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success === true) {
-        return true;
-      }
-      if (data.fallback !== true) {
-        return false;
-      }
-    }
-  } catch {}
-
-  // 2. Check Cloudflare Pages VITE_ADMIN_PASSWORD variable
-  if (CLOUDFLARE_VITE_PASSWORD) {
-    return trimmed === CLOUDFLARE_VITE_PASSWORD;
+  // 2. Check Cloudflare Pages ADMIN_PASSWORD injected during build
+  if (CLOUDFLARE_ENV_PASSWORD) {
+    return trimmed === CLOUDFLARE_ENV_PASSWORD;
   }
 
   // 3. Check custom password stored in localStorage
@@ -113,12 +77,12 @@ export async function verifyPassword(password: string): Promise<boolean> {
     return inputHash === savedHash;
   }
 
-  // 4. Default fallback ONLY if zero Cloudflare secrets exist
-  return trimmed === DEFAULT_PASSWORD;
+  // If no password matched, DENY access
+  return false;
 }
 
 /**
- * Sets session to authenticated
+ * Sets session to authenticated (clears persistent storage to guarantee prompt on next open)
  */
 export function setAuthenticated(): void {
   try {
@@ -149,12 +113,6 @@ export async function updateAdminPassword(newPassword: string): Promise<void> {
   localStorage.setItem(AUTH_STORAGE_KEY, hash);
 }
 
-export function hasCustomPassword(): boolean {
-  return !!CLOUDFLARE_VITE_PASSWORD || !!localStorage.getItem(AUTH_STORAGE_KEY);
-}
-
 export function isCloudflareSecretConfigured(): boolean {
-  return !!CLOUDFLARE_VITE_PASSWORD;
+  return !!CLOUDFLARE_ENV_PASSWORD;
 }
-
-export { DEFAULT_PASSWORD, CLOUDFLARE_VITE_PASSWORD };
