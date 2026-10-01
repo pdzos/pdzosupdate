@@ -1,4 +1,6 @@
-// Cloudflare Pages Function at /api/verify-password
+// Cloudflare Pages Function at /verify-admin
+// Compatible with Cloudflare Pages Functions (Free tier)
+
 interface Env {
   ADMIN_PASSWORD?: string;
   VITE_ADMIN_PASSWORD?: string;
