@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "app": {
+    "name": "ZYRA",
+    "packageName": "com.hexos.zyra",
+    "icon": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80",
+    "description": "Personal AI Assistant designed for deep Android automation and real-time voice interaction.",
+    "developer": "HexOS Systems",
+    "website": "https://hexos.in/zyra"
+  },
+  "update": {
+    "version": "1.6.0",
+    "versionCode": 16,
+    "apkUrl": "https://drive.google.com/uc?export=download&id=1ZyRa_ExAmPLe_FiLeId_160_GoogleDrive",
+    "fileSize": "52 MB",
+    "minimumAndroid": 26,
+    "forceUpdate": false,
+    "channel": "stable",
+    "releaseDate": "2026-10-01",
+    "changelog": [
+      "Faster AI responses and contextual reasoning",
+      "New voice recognition engine with low-latency offline mode",
+      "Battery saving background sync protocol",
+      "General UI smoothness and bug fixes"
+    ]
+  }
+}

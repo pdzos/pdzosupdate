@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "app": {
+    "name": "Meshopz",
+    "packageName": "com.hexos.meshopz",
+    "icon": "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=160&auto=format&fit=crop&q=80",
+    "description": "Decentralized local commerce and peer-to-peer marketplace application.",
+    "developer": "HexOS Commerce",
+    "website": "https://hexos.in/meshopz"
+  },
+  "update": {
+    "version": "1.0.0",
+    "versionCode": 100,
+    "apkUrl": "https://drive.google.com/uc?export=download&id=1Meshopz_FileId_100_GoogleDrive",
+    "fileSize": "41 MB",
+    "minimumAndroid": 26,
+    "forceUpdate": false,
+    "channel": "stable",
+    "releaseDate": "2026-09-20",
+    "changelog": [
+      "Launch edition of Meshopz Android app."
+    ]
+  }
+}

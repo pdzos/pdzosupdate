@@ -1,0 +1,57 @@
+name: Validate HexOS Updates JSON
+
+on:
+  push:
+    paths:
+      - 'apps/**.json'
+      - 'releases/**.json'
+  pull_request:
+    paths:
+      - 'apps/**.json'
+      - 'releases/**.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate All JSON Files
+        run: |
+          echo "Validating HexOS Update JSON structures..."
+          python3 -c "
+          import json, glob, sys, re
+
+          success = True
+          files = glob.glob('apps/*.json')
+          if not files:
+              print('Warning: No files found in apps/*.json')
+          
+          for path in files:
+              print(f'Checking {path}...')
+              try:
+                  with open(path) as f:
+                      data = json.load(f)
+                  assert data.get('success') is True, 'Field success must be true'
+                  assert 'app' in data, 'app object missing'
+                  assert 'packageName' in data['app'], 'app.packageName missing'
+                  assert 'update' in data, 'update object missing'
+                  assert 'versionCode' in data['update'], 'update.versionCode missing'
+                  assert isinstance(data['update']['versionCode'], int), 'versionCode must be integer'
+                  assert data['update']['versionCode'] > 0, 'versionCode must be positive'
+                  assert data['update']['apkUrl'].startswith('http'), 'apkUrl must be valid URL'
+                  print(f'  ✓ Validated {path} (versionCode: {data[\"update\"][\"versionCode\"]})')
+              except Exception as e:
+                  print(f'  ✗ ERROR in {path}: {e}', file=sys.stderr)
+                  success = False
+
+          if not success:
+              sys.exit(1)
+          print('All HexOS metadata files passed validation!')
+          "

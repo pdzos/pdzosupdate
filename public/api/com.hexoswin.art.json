@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "app": {
+    "name": "WinArt",
+    "packageName": "com.hexoswin.art",
+    "icon": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80",
+    "description": "Windows 11 inspired Fluent UI launcher and personalization suite for modern Android devices.",
+    "developer": "HexOS Systems",
+    "website": "https://hexos.in/winart"
+  },
+  "update": {
+    "version": "1.2.0",
+    "versionCode": 12,
+    "apkUrl": "https://drive.google.com/uc?export=download&id=1WinArt_FileId_120_GoogleDrive",
+    "fileSize": "38 MB",
+    "minimumAndroid": 26,
+    "forceUpdate": false,
+    "channel": "stable",
+    "releaseDate": "2026-09-28",
+    "changelog": [
+      "Windows 11 inspired Start menu widget revamps",
+      "Fluent glass acrylic blur animations",
+      "Customizable taskbar icon alignment (Left / Center)",
+      "Performance optimizations for 120Hz displays"
+    ]
+  }
+}

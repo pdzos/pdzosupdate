@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "app": {
+    "name": "HexPIYUSH IDE",
+    "packageName": "com.hexos.hexpiyushide",
+    "icon": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=160&auto=format&fit=crop&q=80",
+    "description": "On-device C++, Python, and Web development IDE with built-in terminal and LSP.",
+    "developer": "HexOS Systems",
+    "website": "https://hexos.in/ide"
+  },
+  "update": {
+    "version": "1.0.4",
+    "versionCode": 104,
+    "apkUrl": "https://drive.google.com/uc?export=download&id=1HexPiyush_FileId_104_GoogleDrive",
+    "fileSize": "88 MB",
+    "minimumAndroid": 26,
+    "forceUpdate": false,
+    "channel": "stable",
+    "releaseDate": "2026-09-29",
+    "changelog": [
+      "Clang 18 bundled C++ compiler toolchain",
+      "Git merge conflict resolver in editor",
+      "Hardware keyboard shortcut maps"
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "app": {
+    "name": "Tredmpt",
+    "packageName": "com.hexos.tredmpt",
+    "icon": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=160&auto=format&fit=crop&q=80",
+    "description": "Ultra-secure cryptographic wallet, token tracking, and decentralized key manager.",
+    "developer": "HexOS Security Lab",
+    "website": "https://hexos.in/tredmpt"
+  },
+  "update": {
+    "version": "2.0.1",
+    "versionCode": 201,
+    "apkUrl": "https://drive.google.com/uc?export=download&id=1Tredmpt_FileId_201_GoogleDrive",
+    "fileSize": "64 MB",
+    "minimumAndroid": 28,
+    "forceUpdate": true,
+    "channel": "stable",
+    "releaseDate": "2026-09-30",
+    "changelog": [
+      "CRITICAL: Quantum-resistant encryption upgrade (Force Update enabled)",
+      "Biometric hardware Keystore enclave integration",
+      "Instant offline transaction signing",
+      "Fixed memory leak on continuous WebSocket monitoring"
+    ]
+  }
+}
