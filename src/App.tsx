@@ -34,8 +34,8 @@ import { AppManageModal } from './components/AppManageModal';
 function AppContent() {
   const { showToast } = useToast();
 
-  // Authentication State: Require password to view/manage dashboard
-  const [isAuth, setIsAuth] = useState(isAuthenticated);
+  // Authentication State: Strict mode — requires password every single time the site is opened
+  const [isAuth, setIsAuth] = useState(false);
 
   const [apps, setApps] = useState<AppRecord[]>(getStoredApps);
   const [settings, setSettings] = useState<SiteSettings>(getStoredSettings);

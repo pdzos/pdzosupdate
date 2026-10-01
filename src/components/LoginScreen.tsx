@@ -10,7 +10,6 @@ interface LoginScreenProps {
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,7 +26,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
     try {
       const isValid = await verifyPassword(password);
       if (isValid) {
-        setAuthenticated(rememberMe);
+        setAuthenticated();
         onLoginSuccess();
       } else {
         setError('Incorrect password. Access denied.');
@@ -100,20 +99,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
               </div>
             )}
 
-            {/* Remember Me */}
+            {/* Strict Session Security Indicator */}
             <div className="flex items-center justify-between text-xs pt-1">
-              <label className="flex items-center gap-2 text-slate-400 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-slate-800 border-slate-700"
-                />
-                <span>Remember session</span>
-              </label>
+              <span className="text-[11px] text-cyan-400/90 font-mono flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+                Password required every time site opens
+              </span>
 
-              <span className="text-[11px] text-slate-500 font-mono">
-                SHA-256 Protected
+              <span className="text-[10px] text-slate-500 font-mono">
+                SHA-256
               </span>
             </div>
 

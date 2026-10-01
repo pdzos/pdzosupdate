@@ -1,5 +1,5 @@
 // Password authentication and session manager for HexOS Update Center
-// Supports Cloudflare Pages "Variables and secrets" (ADMIN_PASSWORD or VITE_ADMIN_PASSWORD)
+// STRICT MODE: Never persists session to disk so EVERY time the website is opened, password must be entered!
 
 const AUTH_STORAGE_KEY = 'hexos_admin_password_hash_v1';
 const SESSION_STORAGE_KEY = 'hexos_admin_session_token_v1';
@@ -21,15 +21,11 @@ export async function sha256(message: string): Promise<string> {
 }
 
 /**
- * Returns true if admin is currently authenticated in this session
+ * Always returns false on website load so EVERY time the website is opened,
+ * the admin must enter the password.
  */
 export function isAuthenticated(): boolean {
-  try {
-    const session = sessionStorage.getItem(SESSION_STORAGE_KEY) || localStorage.getItem(SESSION_STORAGE_KEY);
-    return session === 'authenticated_active_session';
-  } catch {
-    return false;
-  }
+  return false;
 }
 
 /**
@@ -82,16 +78,14 @@ export async function verifyPassword(password: string): Promise<boolean> {
 }
 
 /**
- * Sets session to authenticated
+ * Sets session to authenticated (clears persistent storage to guarantee prompt on next open)
  */
-export function setAuthenticated(rememberMe = false): void {
+export function setAuthenticated(): void {
   try {
-    sessionStorage.setItem(SESSION_STORAGE_KEY, 'authenticated_active_session');
-    if (rememberMe) {
-      localStorage.setItem(SESSION_STORAGE_KEY, 'authenticated_active_session');
-    }
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    localStorage.removeItem(SESSION_STORAGE_KEY);
   } catch (e) {
-    console.error('Failed setting auth session', e);
+    console.error('Failed clearing stored session', e);
   }
 }
 
