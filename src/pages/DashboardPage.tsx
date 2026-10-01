@@ -195,20 +195,41 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <h2 className="text-base font-bold text-white tracking-tight">Recent Releases</h2>
             <p className="text-xs text-slate-400">All published Android builds across channels</p>
           </div>
-          <button
-            onClick={() => onNavigate('releases')}
-            className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 font-semibold"
-          >
-            <span>View All ({totalReleases})</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          {totalReleases > 0 && (
+            <button
+              onClick={() => onNavigate('releases')}
+              className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 font-semibold"
+            >
+              <span>View All ({totalReleases})</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
-        <RecentReleasesTable
-          releases={sortedReleases.slice(0, 8)}
-          onRollback={onRollback}
-          onViewJson={onViewJson}
-        />
+        {totalApps === 0 ? (
+          <div className="p-8 text-center bg-[#0d0f17] border border-slate-800 rounded-2xl space-y-4">
+            <Layers className="w-12 h-12 text-slate-600 mx-auto" />
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-white">No Applications Registered Yet</h3>
+              <p className="text-xs text-slate-400 max-w-md mx-auto">
+                Your update center is clean with zero demo data. Click below to register your first Android application and generate its permanent update URL.
+              </p>
+            </div>
+            <button
+              onClick={() => onNavigate('add-app')}
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 shadow-lg shadow-blue-600/20"
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span>Add Your First App</span>
+            </button>
+          </div>
+        ) : (
+          <RecentReleasesTable
+            releases={sortedReleases.slice(0, 8)}
+            onRollback={onRollback}
+            onViewJson={onViewJson}
+          />
+        )}
       </div>
     </div>
   );

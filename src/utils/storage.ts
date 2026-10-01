@@ -1,10 +1,10 @@
 import { AppRecord, SiteSettings, ActivityEvent, HexOSUpdatePayload, ReleaseInfo } from '../types';
-import { INITIAL_APPS, INITIAL_SETTINGS, INITIAL_ACTIVITY } from '../data/initialData';
+import { INITIAL_APPS, INITIAL_SETTINGS, INITIAL_ACTIVITY, SAMPLE_DEMO_APPS } from '../data/initialData';
 
 const STORAGE_KEYS = {
-  APPS: 'hexos_apps_data_v1',
-  SETTINGS: 'hexos_site_settings_v1',
-  ACTIVITY: 'hexos_activity_log_v1',
+  APPS: 'hexos_apps_data_v2', // v2 for clean empty slate
+  SETTINGS: 'hexos_site_settings_v2',
+  ACTIVITY: 'hexos_activity_log_v2',
 };
 
 export function getStoredApps(): AppRecord[] {
@@ -80,10 +80,24 @@ export function logActivity(event: Omit<ActivityEvent, 'id' | 'timestamp'>): voi
   }
 }
 
+/**
+ * Resets storage to completely clean slate (0 apps)
+ */
+export function resetToCleanSlate(): void {
+  localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify([]));
+  localStorage.setItem(STORAGE_KEYS.ACTIVITY, JSON.stringify([]));
+}
+
+/**
+ * Loads sample apps only if requested by user
+ */
+export function loadSampleDemoApps(): AppRecord[] {
+  localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(SAMPLE_DEMO_APPS));
+  return SAMPLE_DEMO_APPS;
+}
+
 export function resetToDemoData(): void {
-  localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(INITIAL_APPS));
-  localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
-  localStorage.setItem(STORAGE_KEYS.ACTIVITY, JSON.stringify(INITIAL_ACTIVITY));
+  resetToCleanSlate();
 }
 
 /**
@@ -91,7 +105,6 @@ export function resetToDemoData(): void {
  * for an app's permanent endpoint.
  */
 export function generatePermanentJsonPayload(app: AppRecord, channel?: string): HexOSUpdatePayload {
-  // Find current active release or channel matching release
   const releases = app.releases || [];
   let targetRelease: ReleaseInfo | undefined;
 
@@ -145,7 +158,6 @@ export function rollbackAppRelease(packageName: string, targetReleaseId: string)
     return { success: false, message: 'Target release not found.' };
   }
 
-  // Update releases: mark only target as isCurrentActive
   const updatedReleases = app.releases.map(r => ({
     ...r,
     isCurrentActive: r.id === targetReleaseId

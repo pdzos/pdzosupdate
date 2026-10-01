@@ -4,7 +4,7 @@ export const INITIAL_SETTINGS: SiteSettings = {
   siteName: 'HexOS Update Center',
   customDomain: 'updates.hexos.in',
   apiBaseUrl: 'https://updates.hexos.in/api',
-  githubRepo: 'https://github.com/hexos-team/hexos-updates',
+  githubRepo: 'https://github.com/pdzos/pdzosupdate',
   githubBranch: 'main',
   defaultChannel: 'stable',
   defaultAndroidVersion: 26,
@@ -12,7 +12,13 @@ export const INITIAL_SETTINGS: SiteSettings = {
   googleDriveFallbackAdvice: true,
 };
 
-export const INITIAL_APPS: AppRecord[] = [
+// CLEAN SLATE: NO FIXED DEMO DATA BY DEFAULT
+export const INITIAL_APPS: AppRecord[] = [];
+
+export const INITIAL_ACTIVITY: ActivityEvent[] = [];
+
+// Optional sample data available only if explicitly requested in Settings
+export const SAMPLE_DEMO_APPS: AppRecord[] = [
   {
     id: 'zyra-app',
     name: 'ZYRA',
@@ -28,7 +34,7 @@ export const INITIAL_APPS: AppRecord[] = [
     status: 'active',
     createdAt: '2026-08-10',
     updatedAt: '2026-10-01',
-    totalReleases: 4,
+    totalReleases: 2,
     releases: [
       {
         id: 'rel-zyra-160',
@@ -47,8 +53,7 @@ export const INITIAL_APPS: AppRecord[] = [
         changelog: [
           'Faster AI responses and contextual reasoning',
           'New voice recognition engine with low-latency offline mode',
-          'Battery saving background sync protocol',
-          'General UI smoothness and bug fixes'
+          'Bug fixes and stability updates'
         ],
         status: 'published',
         isCurrentActive: true,
@@ -67,50 +72,7 @@ export const INITIAL_APPS: AppRecord[] = [
         forceUpdate: false,
         channel: 'stable',
         releaseDate: '2026-09-12',
-        changelog: [
-          'Initial voice wake word support',
-          'Support for custom LLM endpoints',
-          'Enhanced memory optimization'
-        ],
-        status: 'published',
-        isCurrentActive: false,
-      },
-      {
-        id: 'rel-zyra-140',
-        appPackageName: 'com.hexos.zyra',
-        version: '1.4.0',
-        versionCode: 14,
-        apkUrl: 'https://drive.google.com/file/d/1ZyRa_ExAmPLe_FiLeId_140_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1ZyRa_ExAmPLe_FiLeId_140_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1ZyRa_ExAmPLe_FiLeId_140_GoogleDrive',
-        fileSize: '46 MB',
-        minimumAndroid: 26,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-08-25',
-        changelog: [
-          'Material You dynamic color palettes',
-          'Quick tiles for rapid toggle access'
-        ],
-        status: 'published',
-        isCurrentActive: false,
-      },
-      {
-        id: 'rel-zyra-100',
-        appPackageName: 'com.hexos.zyra',
-        version: '1.0.0',
-        versionCode: 10,
-        apkUrl: 'https://drive.google.com/file/d/1ZyRa_ExAmPLe_FiLeId_100_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1ZyRa_ExAmPLe_FiLeId_100_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1ZyRa_ExAmPLe_FiLeId_100_GoogleDrive',
-        fileSize: '42 MB',
-        minimumAndroid: 26,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-08-10',
-        changelog: ['Genesis initial release of ZYRA Assistant.'],
+        changelog: ['Initial voice wake word support'],
         status: 'published',
         isCurrentActive: false,
       }
@@ -131,7 +93,7 @@ export const INITIAL_APPS: AppRecord[] = [
     status: 'active',
     createdAt: '2026-07-15',
     updatedAt: '2026-09-28',
-    totalReleases: 3,
+    totalReleases: 1,
     releases: [
       {
         id: 'rel-winart-120',
@@ -147,248 +109,10 @@ export const INITIAL_APPS: AppRecord[] = [
         forceUpdate: false,
         channel: 'stable',
         releaseDate: '2026-09-28',
-        changelog: [
-          'Windows 11 inspired Start menu widget revamps',
-          'Fluent glass acrylic blur animations',
-          'Customizable taskbar icon alignment (Left / Center)',
-          'Performance optimizations for 120Hz displays'
-        ],
-        status: 'published',
-        isCurrentActive: true,
-      },
-      {
-        id: 'rel-winart-110',
-        appPackageName: 'com.hexoswin.art',
-        version: '1.1.0',
-        versionCode: 11,
-        apkUrl: 'https://drive.google.com/file/d/1WinArt_FileId_110_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1WinArt_FileId_110_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1WinArt_FileId_110_GoogleDrive',
-        fileSize: '35 MB',
-        minimumAndroid: 26,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-08-20',
-        changelog: [
-          'Live system tiles for RAM and storage',
-          'Fix widget clipping on Foldable screens'
-        ],
-        status: 'published',
-        isCurrentActive: false,
-      },
-      {
-        id: 'rel-winart-100',
-        appPackageName: 'com.hexoswin.art',
-        version: '1.0.0',
-        versionCode: 10,
-        apkUrl: 'https://drive.google.com/file/d/1WinArt_FileId_100_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1WinArt_FileId_100_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1WinArt_FileId_100_GoogleDrive',
-        fileSize: '32 MB',
-        minimumAndroid: 26,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-07-15',
-        changelog: ['Initial public release of WinArt Launcher.'],
-        status: 'published',
-        isCurrentActive: false,
-      }
-    ]
-  },
-  {
-    id: 'tredmpt-app',
-    name: 'Tredmpt',
-    packageName: 'com.hexos.tredmpt',
-    icon: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=160&auto=format&fit=crop&q=80',
-    description: 'Ultra-secure cryptographic wallet, token tracking, and decentralized key manager.',
-    developer: 'HexOS Security Lab',
-    website: 'https://hexos.in/tredmpt',
-    currentVersion: '2.0.1',
-    currentVersionCode: 201,
-    minimumAndroid: 28,
-    defaultChannel: 'stable',
-    status: 'active',
-    createdAt: '2026-06-01',
-    updatedAt: '2026-09-30',
-    totalReleases: 2,
-    releases: [
-      {
-        id: 'rel-tredmpt-201',
-        appPackageName: 'com.hexos.tredmpt',
-        version: '2.0.1',
-        versionCode: 201,
-        apkUrl: 'https://drive.google.com/file/d/1Tredmpt_FileId_201_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1Tredmpt_FileId_201_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1Tredmpt_FileId_201_GoogleDrive',
-        fileSize: '64 MB',
-        minimumAndroid: 28,
-        forceUpdate: true, // Emergency security patch example
-        channel: 'stable',
-        releaseDate: '2026-09-30',
-        changelog: [
-          'CRITICAL: Quantum-resistant encryption upgrade (Force Update enabled)',
-          'Biometric hardware Keystore enclave integration',
-          'Instant offline transaction signing',
-          'Fixed memory leak on continuous WebSocket monitoring'
-        ],
-        status: 'published',
-        isCurrentActive: true,
-      },
-      {
-        id: 'rel-tredmpt-190',
-        appPackageName: 'com.hexos.tredmpt',
-        version: '1.9.0',
-        versionCode: 190,
-        apkUrl: 'https://drive.google.com/file/d/1Tredmpt_FileId_190_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1Tredmpt_FileId_190_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1Tredmpt_FileId_190_GoogleDrive',
-        fileSize: '61 MB',
-        minimumAndroid: 28,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-08-14',
-        changelog: [
-          'Multi-chain portfolio visualization',
-          'Enhanced privacy masking in recents screen'
-        ],
-        status: 'published',
-        isCurrentActive: false,
-      }
-    ]
-  },
-  {
-    id: 'hexpiyushide-app',
-    name: 'HexPIYUSH IDE',
-    packageName: 'com.hexos.hexpiyushide',
-    icon: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=160&auto=format&fit=crop&q=80',
-    description: 'On-device C++, Python, and Web development IDE with built-in terminal and LSP.',
-    developer: 'HexOS Systems',
-    website: 'https://hexos.in/ide',
-    currentVersion: '1.0.4',
-    currentVersionCode: 104,
-    minimumAndroid: 26,
-    defaultChannel: 'stable',
-    status: 'active',
-    createdAt: '2026-09-01',
-    updatedAt: '2026-09-29',
-    totalReleases: 1,
-    releases: [
-      {
-        id: 'rel-hexpiyushide-104',
-        appPackageName: 'com.hexos.hexpiyushide',
-        version: '1.0.4',
-        versionCode: 104,
-        apkUrl: 'https://drive.google.com/file/d/1HexPiyush_FileId_104_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1HexPiyush_FileId_104_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1HexPiyush_FileId_104_GoogleDrive',
-        fileSize: '88 MB',
-        minimumAndroid: 26,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-09-29',
-        changelog: [
-          'Clang 18 bundled C++ compiler toolchain',
-          'Git merge conflict resolver in editor',
-          'Hardware keyboard shortcut maps'
-        ],
+        changelog: ['Fluent glass acrylic blur animations', 'Start menu redesign'],
         status: 'published',
         isCurrentActive: true,
       }
     ]
-  },
-  {
-    id: 'meshopz-app',
-    name: 'Meshopz',
-    packageName: 'com.hexos.meshopz',
-    icon: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=160&auto=format&fit=crop&q=80',
-    description: 'Decentralized local commerce and peer-to-peer marketplace application.',
-    developer: 'HexOS Commerce',
-    website: 'https://hexos.in/meshopz',
-    currentVersion: '1.0.0',
-    currentVersionCode: 100,
-    minimumAndroid: 26,
-    defaultChannel: 'stable',
-    status: 'active',
-    createdAt: '2026-09-20',
-    updatedAt: '2026-09-20',
-    totalReleases: 1,
-    releases: [
-      {
-        id: 'rel-meshopz-100',
-        appPackageName: 'com.hexos.meshopz',
-        version: '1.0.0',
-        versionCode: 100,
-        apkUrl: 'https://drive.google.com/file/d/1Meshopz_FileId_100_GoogleDrive/view?usp=sharing',
-        apkSource: 'gdrive',
-        gdriveFileId: '1Meshopz_FileId_100_GoogleDrive',
-        directDownloadUrl: 'https://drive.google.com/uc?export=download&id=1Meshopz_FileId_100_GoogleDrive',
-        fileSize: '41 MB',
-        minimumAndroid: 26,
-        forceUpdate: false,
-        channel: 'stable',
-        releaseDate: '2026-09-20',
-        changelog: ['Launch edition of Meshopz Android app.'],
-        status: 'published',
-        isCurrentActive: true,
-      }
-    ]
-  }
-];
-
-export const INITIAL_ACTIVITY: ActivityEvent[] = [
-  {
-    id: 'act-1',
-    timestamp: '2026-10-01 17:45:00',
-    type: 'release_published',
-    title: 'ZYRA v1.6.0 Published',
-    description: 'New stable build deployed with versionCode 16 and Google Drive APK target.',
-    packageName: 'com.hexos.zyra',
-    version: '1.6.0',
-    versionCode: 16,
-  },
-  {
-    id: 'act-2',
-    timestamp: '2026-09-30 11:20:00',
-    type: 'release_published',
-    title: 'Tredmpt v2.0.1 Critical Security Release',
-    description: 'Force Update enabled for versionCode 201 due to encryption protocol upgrade.',
-    packageName: 'com.hexos.tredmpt',
-    version: '2.0.1',
-    versionCode: 201,
-  },
-  {
-    id: 'act-3',
-    timestamp: '2026-09-29 14:10:00',
-    type: 'release_published',
-    title: 'HexPIYUSH IDE v1.0.4 Released',
-    description: 'Updated Clang compiler toolchain and keyboard shortcuts.',
-    packageName: 'com.hexos.hexpiyushide',
-    version: '1.0.4',
-    versionCode: 104,
-  },
-  {
-    id: 'act-4',
-    timestamp: '2026-09-28 09:30:00',
-    type: 'release_published',
-    title: 'WinArt v1.2.0 Released',
-    description: 'Fluent glass acrylic blur animations and Start menu redesign.',
-    packageName: 'com.hexoswin.art',
-    version: '1.2.0',
-    versionCode: 12,
-  },
-  {
-    id: 'act-5',
-    timestamp: '2026-09-20 16:00:00',
-    type: 'app_created',
-    title: 'Meshopz App Registered',
-    description: 'Permanent update endpoint com.hexos.meshopz.json generated.',
-    packageName: 'com.hexos.meshopz',
-    version: '1.0.0',
-    versionCode: 100,
   }
 ];

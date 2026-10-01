@@ -11,16 +11,21 @@ import {
   RotateCcw,
   Download,
   Upload,
-  AlertTriangle,
-  Lock
+  KeyRound,
+  Trash2,
+  Lock,
+  Check,
+  Sparkles
 } from 'lucide-react';
 import { downloadFile } from '../utils/githubExporter';
+import { verifyPassword, updateAdminPassword } from '../utils/auth';
 
 interface SettingsPageProps {
   settings: SiteSettings;
   apps: AppRecord[];
   onSaveSettings: (settings: SiteSettings) => void;
-  onResetDemoData: () => void;
+  onResetCleanSlate: () => void;
+  onLoadDemoApps: () => void;
   onImportData: (apps: AppRecord[]) => void;
 }
 
@@ -28,7 +33,8 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   settings,
   apps,
   onSaveSettings,
-  onResetDemoData,
+  onResetCleanSlate,
+  onLoadDemoApps,
   onImportData
 }) => {
   const { showToast } = useToast();
@@ -41,6 +47,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   const [defaultChannel, setDefaultChannel] = useState<ChannelType>(settings.defaultChannel);
   const [defaultAndroidVersion, setDefaultAndroidVersion] = useState<number>(settings.defaultAndroidVersion);
   const [publicPagesEnabled, setPublicPagesEnabled] = useState(settings.publicPagesEnabled);
+
+  // Password change state
+  const [currentPass, setCurrentPass] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
+  const [passLoading, setPassLoading] = useState(false);
 
   const handleDomainChange = (domain: string) => {
     setCustomDomain(domain);
@@ -66,6 +78,42 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
 
     onSaveSettings(updated);
     showToast({ type: 'success', title: 'Settings Saved', message: 'Domain and base URLs updated.' });
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPass) {
+      showToast({ type: 'error', title: 'Please enter current password' });
+      return;
+    }
+    if (newPass.length < 4) {
+      showToast({ type: 'error', title: 'New password must be at least 4 characters' });
+      return;
+    }
+    if (newPass !== confirmPass) {
+      showToast({ type: 'error', title: 'New passwords do not match' });
+      return;
+    }
+
+    setPassLoading(true);
+    try {
+      const isCurrentValid = await verifyPassword(currentPass);
+      if (!isCurrentValid) {
+        showToast({ type: 'error', title: 'Current password is incorrect' });
+        setPassLoading(false);
+        return;
+      }
+
+      await updateAdminPassword(newPass);
+      showToast({ type: 'success', title: 'Admin Password Changed Successfully!' });
+      setCurrentPass('');
+      setNewPass('');
+      setConfirmPass('');
+    } catch {
+      showToast({ type: 'error', title: 'Failed to update password' });
+    } finally {
+      setPassLoading(false);
+    }
   };
 
   const handleExportBackup = () => {
@@ -105,7 +153,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         } else {
           showToast({ type: 'error', title: 'Invalid backup JSON file' });
         }
-      } catch (err) {
+      } catch {
         showToast({ type: 'error', title: 'Failed to parse JSON file' });
       }
     };
@@ -118,13 +166,72 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       <div>
         <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
           <Settings className="w-5 h-5 text-blue-400" />
-          <span>System & Architecture Settings</span>
+          <span>System & Security Settings</span>
         </h1>
         <p className="text-xs text-slate-400 mt-0.5">
-          Configure domain endpoints, GitHub repository linkage, and public portal visibility.
+          Configure security password, custom domain, and clean slate data management.
         </p>
       </div>
 
+      {/* Admin Password Security Form */}
+      <div className="p-6 rounded-2xl bg-[#0e1019] border border-blue-500/30 space-y-4">
+        <h2 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+          <KeyRound className="w-4 h-4 text-cyan-400" />
+          <span>Admin Password & Access Control</span>
+        </h2>
+        <p className="text-xs text-slate-400 leading-relaxed">
+          Change your dashboard login password. Protected with SHA-256 encryption.
+        </p>
+
+        <form onSubmit={handleChangePassword} className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300 font-mono">Current Password</label>
+            <input
+              type="password"
+              required
+              value={currentPass}
+              onChange={(e) => setCurrentPass(e.target.value)}
+              placeholder="Current password..."
+              className="w-full px-3 py-2 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300 font-mono">New Password</label>
+            <input
+              type="password"
+              required
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
+              placeholder="New password..."
+              className="w-full px-3 py-2 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300 font-mono">Confirm New Password</label>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                required
+                value={confirmPass}
+                onChange={(e) => setConfirmPass(e.target.value)}
+                placeholder="Confirm new password..."
+                className="w-full px-3 py-2 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500 font-mono"
+              />
+              <button
+                type="submit"
+                disabled={passLoading}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shrink-0 transition-colors shadow-md disabled:opacity-50"
+              >
+                {passLoading ? 'Saving...' : 'Update'}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {/* Main Settings Form */}
       <form onSubmit={handleSave} className="space-y-6">
         {/* Domain & Endpoints */}
         <div className="p-6 rounded-2xl bg-[#0e1019] border border-slate-800 space-y-4">
@@ -169,9 +276,6 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 onChange={(e) => setApiBaseUrl(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs font-mono text-blue-300 focus:outline-none focus:border-blue-500"
               />
-              <p className="text-[10px] text-slate-500 font-mono">
-                Example permanent endpoint: <code className="text-slate-400">{apiBaseUrl}/com.hexos.zyra.json</code>
-              </p>
             </div>
           </div>
         </div>
@@ -192,7 +296,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 type="url"
                 value={githubRepo}
                 onChange={(e) => setGithubRepo(e.target.value)}
-                placeholder="https://github.com/hexos-team/hexos-updates"
+                placeholder="https://github.com/pdzos/pdzosupdate"
                 className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -209,15 +313,6 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
                 className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs font-mono text-white focus:outline-none focus:border-blue-500"
               />
             </div>
-          </div>
-
-          {/* Security Notice: Section 36 */}
-          <div className="p-3.5 rounded-xl bg-[#121422] border border-slate-800 flex items-start gap-2.5 text-[11px] text-slate-400">
-            <Lock className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-            <span>
-              <strong>Zero Credential Storage Guarantee:</strong> Personal Access Tokens and passwords are never requested or stored
-              in frontend code or client browser storage. Sync your JSON files directly via git commits or GitHub Actions.
-            </span>
           </div>
         </div>
 
@@ -290,14 +385,51 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
         </div>
       </form>
 
-      {/* Data Management: Backup & Restore & Demo Seed */}
+      {/* Data Management: Clean Slate & Backups */}
       <div className="p-6 rounded-2xl bg-[#0e1019] border border-slate-800 space-y-4">
         <h2 className="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
           <Shield className="w-4 h-4 text-amber-400" />
-          <span>Data Backup, Restore & Demo Reset</span>
+          <span>Data Storage & Clean Slate Management</span>
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Clean Slate Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm('Wipe all apps and start with a 100% clean empty dashboard (0 apps)?')) {
+                onResetCleanSlate();
+                showToast({ type: 'info', title: 'Dashboard Cleared to Clean Slate' });
+              }
+            }}
+            className="p-3 rounded-xl bg-rose-950/20 hover:bg-rose-950/40 border border-rose-500/30 text-left space-y-1 transition-colors"
+          >
+            <div className="flex items-center gap-2 text-xs font-bold text-rose-400">
+              <Trash2 className="w-4 h-4" />
+              <span>Clean Slate (0 Apps)</span>
+            </div>
+            <p className="text-[10px] text-slate-400">Wipe all apps and remove any sample data.</p>
+          </button>
+
+          {/* Optional Load Sample Demo Apps */}
+          <button
+            type="button"
+            onClick={() => {
+              if (window.confirm('Load sample apps for testing purposes?')) {
+                onLoadDemoApps();
+                showToast({ type: 'success', title: 'Sample Apps Loaded' });
+              }
+            }}
+            className="p-3 rounded-xl bg-[#121422] hover:bg-[#181b2e] border border-slate-800 text-left space-y-1 transition-colors"
+          >
+            <div className="flex items-center gap-2 text-xs font-bold text-cyan-400">
+              <Sparkles className="w-4 h-4" />
+              <span>Load Sample Apps</span>
+            </div>
+            <p className="text-[10px] text-slate-400">Optional: Load 2 sample apps for test.</p>
+          </button>
+
+          {/* Export Backup */}
           <button
             type="button"
             onClick={handleExportBackup}
@@ -305,36 +437,20 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
           >
             <div className="flex items-center gap-2 text-xs font-bold text-blue-400">
               <Download className="w-4 h-4" />
-              <span>Export Full Backup</span>
+              <span>Export Backup</span>
             </div>
-            <p className="text-[10px] text-slate-400">Download complete app and release metadata as JSON.</p>
+            <p className="text-[10px] text-slate-400">Download metadata backup JSON.</p>
           </button>
 
+          {/* Import Backup */}
           <label className="p-3 rounded-xl bg-[#121422] hover:bg-[#181b2e] border border-slate-800 text-left space-y-1 transition-colors cursor-pointer block">
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-400">
               <Upload className="w-4 h-4" />
               <span>Import Backup</span>
             </div>
-            <p className="text-[10px] text-slate-400">Upload and restore your exported metadata JSON.</p>
+            <p className="text-[10px] text-slate-400">Restore your JSON backup.</p>
             <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
           </label>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (window.confirm('Reset all apps and releases to the original seed demo data (ZYRA, WinArt, Tredmpt, etc.)?')) {
-                onResetDemoData();
-                showToast({ type: 'info', title: 'Reset to Demo Data Completed' });
-              }
-            }}
-            className="p-3 rounded-xl bg-[#121422] hover:bg-[#181b2e] border border-slate-800 text-left space-y-1 transition-colors"
-          >
-            <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
-              <RotateCcw className="w-4 h-4" />
-              <span>Reset to Demo Data</span>
-            </div>
-            <p className="text-[10px] text-slate-400">Restore factory sample apps (ZYRA, WinArt, Tredmpt).</p>
-          </button>
         </div>
       </div>
     </div>

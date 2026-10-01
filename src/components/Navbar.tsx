@@ -1,19 +1,21 @@
 import React from 'react';
 import { HexLogo } from './HexLogo';
-import { Search, Bell, Menu, ShieldCheck, Terminal, HelpCircle } from 'lucide-react';
+import { Search, Bell, Menu, HelpCircle, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   onToggleMobileMenu: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onOpenDocs: () => void;
+  onLogout: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   onToggleMobileMenu,
   searchQuery,
   onSearchChange,
-  onOpenDocs
+  onOpenDocs,
+  onLogout,
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full h-16 border-b border-slate-800 bg-[#090a0f]/90 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between gap-4">
@@ -51,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Right: Quick actions & Admin profile */}
+      {/* Right: Quick actions, Admin profile & Logout */}
       <div className="flex items-center gap-2.5">
         <button
           onClick={onOpenDocs}
@@ -77,15 +79,24 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Admin profile */}
+        {/* Admin profile & Logout */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shadow-md ring-2 ring-slate-800">
             H
           </div>
           <div className="hidden xl:flex flex-col text-left">
             <span className="text-xs font-bold text-slate-200 leading-none">HexOS Admin</span>
-            <span className="text-[10px] text-slate-500 font-mono mt-0.5">Free Tier (No DB)</span>
+            <span className="text-[10px] text-emerald-400 font-mono mt-0.5">Authenticated</span>
           </div>
+
+          {/* Logout Button */}
+          <button
+            onClick={onLogout}
+            className="p-1.5 ml-1 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors"
+            title="Log out from Admin session"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </header>

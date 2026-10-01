@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AppRecord, SiteSettings, ActivityEvent, ReleaseInfo } from './types';
 import {
   getStoredApps,
@@ -7,13 +7,15 @@ import {
   saveSettings,
   getStoredActivity,
   logActivity,
-  resetToDemoData,
-  rollbackAppRelease,
-  generatePermanentJsonPayload
+  resetToCleanSlate,
+  loadSampleDemoApps,
+  rollbackAppRelease
 } from './utils/storage';
+import { isAuthenticated, logout } from './utils/auth';
 import { ToastProvider, useToast } from './components/Toast';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavigationTab } from './components/Sidebar';
+import { LoginScreen } from './components/LoginScreen';
 import { DashboardPage } from './pages/DashboardPage';
 import { AppsPage } from './pages/AppsPage';
 import { AddAppPage } from './pages/AddAppPage';
@@ -31,6 +33,9 @@ import { AppManageModal } from './components/AppManageModal';
 
 function AppContent() {
   const { showToast } = useToast();
+
+  // Authentication State: Require password to view/manage dashboard
+  const [isAuth, setIsAuth] = useState(isAuthenticated);
 
   const [apps, setApps] = useState<AppRecord[]>(getStoredApps);
   const [settings, setSettings] = useState<SiteSettings>(getStoredSettings);
@@ -69,6 +74,12 @@ function AppContent() {
     saveSettings(newSettings);
   };
 
+  const handleLogout = () => {
+    logout();
+    setIsAuth(false);
+    showToast({ type: 'info', title: 'Logged Out', message: 'Admin session closed.' });
+  };
+
   // Rollback release handler
   const handleRollback = (packageName: string, releaseId: string, version: string) => {
     const confirmed = window.confirm(
@@ -95,7 +106,6 @@ function AppContent() {
     const updatedApps = apps.map(app => {
       if (app.packageName !== packageName) return app;
 
-      // Update releases list
       const updatedReleases = makeActive
         ? app.releases.map(r => ({ ...r, isCurrentActive: false }))
         : [...app.releases];
@@ -150,15 +160,20 @@ function AppContent() {
     setCurrentTab('apps');
   };
 
-  // Reset demo data
-  const handleResetDemo = () => {
-    resetToDemoData();
-    setApps(getStoredApps());
-    setSettings(getStoredSettings());
-    setActivity(getStoredActivity());
+  // Reset to clean slate (0 apps)
+  const handleResetCleanSlate = () => {
+    resetToCleanSlate();
+    setApps([]);
+    setActivity([]);
   };
 
-  // If currently in public page mode
+  // Optional Load Sample Demo Apps
+  const handleLoadDemoApps = () => {
+    const loaded = loadSampleDemoApps();
+    setApps(loaded);
+  };
+
+  // Public App Page (doesn't require password, allowing public download)
   if (publicViewPackage) {
     const publicApp = apps.find(a => a.packageName === publicViewPackage);
     if (publicApp) {
@@ -169,6 +184,11 @@ function AppContent() {
         />
       );
     }
+  }
+
+  // Password Lock Screen: If not logged in, prompt for admin password
+  if (!isAuth) {
+    return <LoginScreen onLoginSuccess={() => setIsAuth(true)} />;
   }
 
   // All total releases count
@@ -187,6 +207,7 @@ function AppContent() {
           }
         }}
         onOpenDocs={() => setCurrentTab('docs')}
+        onLogout={handleLogout}
       />
 
       <div className="flex-1 flex w-full">
@@ -306,7 +327,7 @@ function AppContent() {
             <ActivityPage
               activity={activity}
               onClearActivity={() => {
-                localStorage.removeItem('hexos_activity_log_v1');
+                resetToCleanSlate();
                 setActivity([]);
               }}
             />
@@ -317,7 +338,8 @@ function AppContent() {
               settings={settings}
               apps={apps}
               onSaveSettings={updateSettings}
-              onResetDemoData={handleResetDemo}
+              onResetCleanSlate={handleResetCleanSlate}
+              onLoadDemoApps={handleLoadDemoApps}
               onImportData={(imported) => {
                 updateAppsList(imported);
                 setActivity(getStoredActivity());
