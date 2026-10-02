@@ -254,14 +254,28 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono">
-                Custom Domain (e.g. updates.hexos.in)
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider font-mono">
+                  Current / Custom Domain
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && window.location.host) {
+                      handleDomainChange(window.location.host);
+                      showToast({ type: 'info', title: 'Auto-detected Live Domain', message: window.location.host });
+                    }
+                  }}
+                  className="text-[10px] text-blue-400 hover:text-blue-300 font-mono underline"
+                >
+                  Auto-Detect Live Domain
+                </button>
+              </div>
               <input
                 type="text"
                 value={customDomain}
                 onChange={(e) => handleDomainChange(e.target.value)}
-                placeholder="updates.hexos.in or YOUR-APP.pages.dev"
+                placeholder="pdzosupdate.pages.dev"
                 className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs font-mono text-cyan-300 focus:outline-none focus:border-blue-500"
               />
             </div>

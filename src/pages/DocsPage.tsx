@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
-import { Copy, Check, Terminal, Smartphone, Globe, BookOpen, HardDrive, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Copy, Check, Terminal, Smartphone, BookOpen, HardDrive, ShieldCheck } from 'lucide-react';
 import { useToast } from '../components/Toast';
 
-export const DocsPage: React.FC = () => {
+interface DocsPageProps {
+  apiBaseUrl?: string;
+}
+
+export const DocsPage: React.FC<DocsPageProps> = ({ apiBaseUrl }) => {
   const { showToast } = useToast();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  const currentApiBase = (
+    apiBaseUrl ||
+    (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'https://pdzosupdate.pages.dev/api')
+  ).replace(/\/+$/, '');
+
+  const sampleEndpoint = `${currentApiBase}/com.hexos.zyra.json`;
 
   const copySnippet = (code: string, key: string) => {
     navigator.clipboard.writeText(code);
@@ -31,7 +42,7 @@ import java.net.URL
 object HexOSUpdateChecker {
 
     // 1. YOUR PERMANENT UPDATE ENDPOINT (NEVER CHANGES)
-    private const val UPDATE_ENDPOINT = "https://updates.hexos.in/api/com.hexos.zyra.json"
+    private const val UPDATE_ENDPOINT = "${sampleEndpoint}"
 
     data class UpdateResult(
         val isUpdateAvailable: Boolean,
@@ -95,14 +106,13 @@ object HexOSUpdateChecker {
      * Complies with Android security requirements (No unauthorized silent installation).
      */
     fun showUpdateDialog(context: Context, result: UpdateResult) {
-        val changelogText = result.changelog.joinToString("\n") { "• $it" }
-        val message = "Version \${result.versionName} is ready for installation.\n\nWhat's New:\n$changelogText"
+        val changelogText = result.changelog.joinToString("\\n") { "• $it" }
+        val message = "Version \${result.versionName} is ready for installation.\\n\\nWhat's New:\\n$changelogText"
 
         val builder = AlertDialog.Builder(context)
             .setTitle(if (result.forceUpdate) "Mandatory Update Required" else "Update Available")
             .setMessage(message)
             .setPositiveButton("Download & Install") { _, _ ->
-                // Open APK in browser or DownloadManager
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(result.apkUrl))
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
@@ -120,7 +130,7 @@ object HexOSUpdateChecker {
 
   const jsCode = `// Fetch HexOS permanent update endpoint in JavaScript
 async function checkHexOSUpdate(packageName) {
-  const endpoint = \`https://updates.hexos.in/api/\${packageName}.json\`;
+  const endpoint = \`${currentApiBase}/\${packageName}.json\`;
   const response = await fetch(endpoint, { cache: 'no-cache' });
   const data = await response.json();
 
@@ -135,7 +145,7 @@ async function checkHexOSUpdate(packageName) {
 }`;
 
   const curlCode = `# Test permanent update endpoint using cURL
-curl -s "https://updates.hexos.in/api/com.hexos.zyra.json" | jq .`;
+curl -s "${sampleEndpoint}" | jq .`;
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto pb-12">
@@ -165,7 +175,7 @@ curl -s "https://updates.hexos.in/api/com.hexos.zyra.json" | jq .`;
         <div className="bg-[#08090e] p-3 rounded-xl border border-slate-800 font-mono text-xs flex items-center justify-between">
           <span className="text-emerald-400 font-bold select-none mr-2">GET</span>
           <span className="text-blue-300 truncate flex-1">
-            https://updates.hexos.in/api/&#123;packageName&#125;.json
+            {currentApiBase}/&#123;packageName&#125;.json
           </span>
           <span className="text-[10px] text-slate-500 ml-2">HTTP 200 OK</span>
         </div>
@@ -178,25 +188,23 @@ curl -s "https://updates.hexos.in/api/com.hexos.zyra.json" | jq .`;
 {`{
   "success": true,
   "app": {
-    "name": "ZYRA",
-    "packageName": "com.hexos.zyra",
+    "name": "Your App Name",
+    "packageName": "com.company.app",
     "icon": "https://example.com/icon.png",
-    "description": "Personal AI Assistant",
-    "developer": "HexOS Systems"
+    "description": "Android App Description",
+    "developer": "Developer Name"
   },
   "update": {
-    "version": "1.6.0",
-    "versionCode": 16,
+    "version": "1.0.0",
+    "versionCode": 1,
     "apkUrl": "https://drive.google.com/uc?export=download&id=...",
-    "fileSize": "52 MB",
+    "fileSize": "45 MB",
     "minimumAndroid": 26,
     "forceUpdate": false,
     "channel": "stable",
-    "releaseDate": "2026-10-01",
+    "releaseDate": "2026-10-02",
     "changelog": [
-      "Faster AI responses",
-      "New voice features",
-      "Bug fixes"
+      "Initial production release"
     ]
   }
 }`}
@@ -221,7 +229,7 @@ curl -s "https://updates.hexos.in/api/com.hexos.zyra.json" | jq .`;
         </div>
 
         <p className="text-xs text-slate-300 leading-relaxed">
-          Place this helper class inside your Android Studio project. It queries the permanent endpoint,
+          Place this helper class inside your Android Studio project. It queries your active permanent endpoint,
           compares <code className="text-cyan-400 font-mono">BuildConfig.VERSION_CODE</code>, and triggers the standard
           Android package installer.
         </p>
@@ -265,7 +273,7 @@ curl -s "https://updates.hexos.in/api/com.hexos.zyra.json" | jq .`;
 
         <div className="space-y-3 text-xs text-slate-300 leading-relaxed">
           <p>
-            Google Drive acts as free storage for APK binaries. Because it is completely free, keep in mind these important rules:
+            Google Drive acts as free storage for APK binaries. Keep in mind these important rules:
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -279,7 +287,7 @@ curl -s "https://updates.hexos.in/api/com.hexos.zyra.json" | jq .`;
             <div className="p-3.5 rounded-xl bg-[#121422] border border-slate-800 space-y-1.5">
               <span className="font-bold text-white block">2. Virus Scan Confirmation &gt;100MB</span>
               <p className="text-[11px] text-slate-400">
-                Google Drive cannot automatically scan files larger than 100MB for viruses, which presents a confirmation interstitial. Keep APKs under 100MB or test direct user downloads.
+                Google Drive cannot automatically scan files larger than 100MB for viruses, which presents a confirmation interstitial. Keep APKs under 100MB.
               </p>
             </div>
 

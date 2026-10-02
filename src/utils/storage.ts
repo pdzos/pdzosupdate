@@ -29,17 +29,51 @@ export function saveApps(apps: AppRecord[]): void {
   }
 }
 
+export function getCurrentDomainInfo(): { origin: string; host: string; apiBaseUrl: string } {
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    const origin = window.location.origin;
+    const host = window.location.host;
+    return {
+      origin,
+      host,
+      apiBaseUrl: `${origin}/api`,
+    };
+  }
+  return {
+    origin: 'https://pdzosupdate.pages.dev',
+    host: 'pdzosupdate.pages.dev',
+    apiBaseUrl: 'https://pdzosupdate.pages.dev/api',
+  };
+}
+
 export function getStoredSettings(): SiteSettings {
+  const current = getCurrentDomainInfo();
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
-      return INITIAL_SETTINGS;
+      const dynamicInitial: SiteSettings = {
+        ...INITIAL_SETTINGS,
+        customDomain: current.host,
+        apiBaseUrl: current.apiBaseUrl,
+      };
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(dynamicInitial));
+      return dynamicInitial;
     }
-    return { ...INITIAL_SETTINGS, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    // If the saved domain was the old dummy 'updates.hexos.in', automatically update it to the actual running domain!
+    if (!parsed.customDomain || parsed.customDomain === 'updates.hexos.in' || parsed.apiBaseUrl?.includes('updates.hexos.in')) {
+      parsed.customDomain = current.host;
+      parsed.apiBaseUrl = current.apiBaseUrl;
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(parsed));
+    }
+    return { ...INITIAL_SETTINGS, ...parsed };
   } catch (err) {
     console.error('Failed reading settings from storage', err);
-    return INITIAL_SETTINGS;
+    return {
+      ...INITIAL_SETTINGS,
+      customDomain: current.host,
+      apiBaseUrl: current.apiBaseUrl,
+    };
   }
 }
 

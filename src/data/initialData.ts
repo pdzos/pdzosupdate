@@ -1,9 +1,12 @@
 import { AppRecord, SiteSettings, ActivityEvent } from '../types';
 
+const defaultHost = typeof window !== 'undefined' && window.location?.host ? window.location.host : 'pdzosupdate.pages.dev';
+const defaultOrigin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : 'https://pdzosupdate.pages.dev';
+
 export const INITIAL_SETTINGS: SiteSettings = {
   siteName: 'HexOS Update Center',
-  customDomain: 'updates.hexos.in',
-  apiBaseUrl: 'https://updates.hexos.in/api',
+  customDomain: defaultHost,
+  apiBaseUrl: `${defaultOrigin}/api`,
   githubRepo: 'https://github.com/pdzos/pdzosupdate',
   githubBranch: 'main',
   defaultChannel: 'stable',

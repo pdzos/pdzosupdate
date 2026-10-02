@@ -321,7 +321,7 @@ function AppContent() {
             />
           )}
 
-          {currentTab === 'docs' && <DocsPage />}
+          {currentTab === 'docs' && <DocsPage apiBaseUrl={settings.apiBaseUrl} />}
 
           {currentTab === 'activity' && (
             <ActivityPage
