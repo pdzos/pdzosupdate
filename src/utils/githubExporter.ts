@@ -1,5 +1,5 @@
 import { AppRecord, HexOSUpdatePayload } from '../types';
-import { generatePermanentJsonPayload } from './storage';
+import { generatePermanentJsonPayload, generateStoreAppsJson } from './storage';
 
 export interface ExportedFile {
   path: string;
@@ -10,7 +10,15 @@ export interface ExportedFile {
 export function generateGitHubRepoFiles(apps: AppRecord[]): ExportedFile[] {
   const files: ExportedFile[] = [];
 
-  // 1. Generate apps/{packageName}.json (Permanent endpoints)
+  // 1. Generate consolidated apps.json for PDzOS Store Marketplace
+  const storeCatalog = generateStoreAppsJson(apps);
+  files.push({
+    path: `apps.json`,
+    content: JSON.stringify(storeCatalog, null, 2),
+    description: `Consolidated application catalog for PDzOS Store marketplace`
+  });
+
+  // 2. Generate apps/{packageName}.json (Permanent endpoints)
   apps.forEach(app => {
     const payload: HexOSUpdatePayload = generatePermanentJsonPayload(app);
     files.push({

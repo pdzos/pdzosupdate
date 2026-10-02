@@ -7,6 +7,10 @@ export interface AppMetadata {
   description: string;
   developer: string;
   website?: string;
+  category?: string;
+  tags?: string[];
+  screenshots?: string[];
+  featured?: boolean;
 }
 
 export interface ReleaseInfo {
@@ -36,6 +40,10 @@ export interface AppRecord {
   description: string;
   developer: string;
   website: string;
+  category?: string;
+  tags?: string[];
+  screenshots?: string[];
+  featured?: boolean;
   currentVersion: string;
   currentVersionCode: number;
   minimumAndroid: number;

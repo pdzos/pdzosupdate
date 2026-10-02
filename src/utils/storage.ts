@@ -193,6 +193,10 @@ export function generatePermanentJsonPayload(app: AppRecord, channel?: string): 
       description: app.description,
       developer: app.developer,
       website: app.website,
+      category: app.category || 'Tools',
+      tags: app.tags || ['Android', 'App'],
+      screenshots: app.screenshots || [],
+      featured: Boolean(app.featured),
     },
     update: {
       version: targetRelease ? targetRelease.version : app.currentVersion,
@@ -205,6 +209,62 @@ export function generatePermanentJsonPayload(app: AppRecord, channel?: string): 
       releaseDate: targetRelease ? targetRelease.releaseDate : app.updatedAt,
       changelog: targetRelease ? targetRelease.changelog : ['Initial release'],
     }
+  };
+}
+
+/**
+ * Generates the unified apps.json catalog formatted for PDzOS Store
+ */
+export function generateStoreAppsJson(apps: AppRecord[]) {
+  return {
+    store: {
+      name: "PDzOS Store",
+      tagline: "Your Apps. One Store.",
+      subtitle: "Discover powerful Android apps built by PDzOS.",
+      developer: "PDzOS",
+      version: "1.0.0",
+      badgeThresholds: {
+        newDays: 45,
+        updatedDays: 30
+      }
+    },
+    apps: apps.map(app => {
+      const activeRelease = (app.releases || []).find(r => r.isCurrentActive) || (app.releases || [])[0];
+      const olderReleases = (app.releases || []).filter(r => r.id !== activeRelease?.id);
+      const cleanId = app.packageName.split('.').pop() || app.id.replace(/^app-/, '');
+
+      return {
+        id: cleanId.toLowerCase(),
+        packageName: app.packageName,
+        name: app.name,
+        developer: app.developer || "PDzOS",
+        version: activeRelease ? activeRelease.version : app.currentVersion,
+        versionCode: activeRelease ? activeRelease.versionCode : app.currentVersionCode,
+        category: app.category || "Tools",
+        description: app.description,
+        longDescription: app.description,
+        icon: app.icon,
+        screenshots: app.screenshots && app.screenshots.length > 0 ? app.screenshots : [],
+        size: activeRelease ? activeRelease.fileSize : "N/A",
+        android: activeRelease?.minimumAndroid 
+          ? `Android ${activeRelease.minimumAndroid >= 26 ? (activeRelease.minimumAndroid === 26 ? '8.0+' : activeRelease.minimumAndroid === 27 ? '8.1+' : activeRelease.minimumAndroid === 28 ? '9.0+' : '10.0+') : '7.0+'}`
+          : "Android 8.0+",
+        updated: activeRelease ? activeRelease.releaseDate : app.updatedAt,
+        downloads: 0,
+        featured: Boolean(app.featured),
+        status: app.status === 'active' ? 'stable' : app.status,
+        downloadUrl: activeRelease ? toDirectDownloadUrl(activeRelease.directDownloadUrl || activeRelease.apkUrl) : '',
+        tags: app.tags && app.tags.length > 0 ? app.tags : [app.category || "Tools", "Android"],
+        features: activeRelease?.changelog && activeRelease.changelog.length > 0 ? activeRelease.changelog : ['High performance build', 'OLED dark-mode optimized'],
+        whatsNew: activeRelease?.changelog && activeRelease.changelog.length > 0 ? activeRelease.changelog : ["Initial release"],
+        previousVersions: olderReleases.map(rel => ({
+          version: rel.version,
+          date: rel.releaseDate,
+          size: rel.fileSize,
+          downloadUrl: toDirectDownloadUrl(rel.directDownloadUrl || rel.apkUrl)
+        }))
+      };
+    })
   };
 }
 

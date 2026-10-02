@@ -35,6 +35,10 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
 
   const [apkUrl, setApkUrl] = useState('');
   const [fileSize, setFileSize] = useState('45 MB');
+  const [category, setCategory] = useState('Tools');
+  const [tags, setTags] = useState('Tools, Android');
+  const [screenshots, setScreenshots] = useState('');
+  const [featured, setFeatured] = useState(false);
 
   // Live permanent update URL calculation
   const cleanedPackageName = packageName.trim().toLowerCase();
@@ -82,6 +86,10 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
       description: description.trim(),
       developer: developer.trim(),
       website: website.trim(),
+      category: category.trim() || 'Tools',
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      screenshots: screenshots.split(',').map(s => s.trim()).filter(Boolean),
+      featured,
       currentVersion: initialVersion.trim(),
       currentVersionCode: Number(initialVersionCode),
       minimumAndroid: Number(minimumAndroid),
@@ -267,6 +275,68 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
               placeholder="Describe the application features, audience and purpose..."
               className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
             />
+          </div>
+
+          {/* PDzOS Store Integration Fields */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Store Category
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-blue-500"
+            >
+              <option value="AI">AI &amp; Assistant</option>
+              <option value="Tools">Tools &amp; Utilities</option>
+              <option value="Productivity">Productivity</option>
+              <option value="Creative">Creative &amp; Design</option>
+              <option value="Games">Games</option>
+              <option value="Customization">Customization</option>
+              <option value="Launcher">Launcher</option>
+              <option value="Education">Education</option>
+              <option value="Experimental">Experimental</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Store Tags (Comma-separated)
+            </label>
+            <input
+              type="text"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="e.g. AI, Assistant, Voice"
+              className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+          <div className="space-y-1.5 md:col-span-2">
+            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Screenshots URLs (Optional, comma-separated)
+            </label>
+            <input
+              type="text"
+              value={screenshots}
+              onChange={(e) => setScreenshots(e.target.value)}
+              placeholder="e.g. https://.../screen1.png, https://.../screen2.png"
+              className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+          <div className="md:col-span-2 flex items-center gap-2 p-3 rounded-xl bg-blue-950/20 border border-blue-500/20">
+            <input
+              type="checkbox"
+              id="featuredStore"
+              checked={featured}
+              onChange={(e) => setFeatured(e.target.checked)}
+              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-700 bg-slate-800"
+            />
+            <label htmlFor="featuredStore" className="text-xs text-slate-200 cursor-pointer font-medium">
+              Featured on PDzOS Store (Highlight this app on the marketplace homepage)
+            </label>
           </div>
         </div>
 
