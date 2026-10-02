@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ReleaseInfo, AppRecord } from '../types';
+import { toDirectDownloadUrl } from '../utils/googleDrive';
 import { Download, RotateCcw, Code, ExternalLink, ShieldAlert, CheckCircle, Copy } from 'lucide-react';
 import { useToast } from './Toast';
 
@@ -130,7 +131,7 @@ export const RecentReleasesTable: React.FC<RecentReleasesTableProps> = ({
 
                     {/* Copy APK link */}
                     <button
-                      onClick={() => handleCopyLink(rel.directDownloadUrl || rel.apkUrl)}
+                      onClick={() => handleCopyLink(toDirectDownloadUrl(rel.directDownloadUrl || rel.apkUrl))}
                       className="p-1.5 text-slate-400 hover:text-blue-400 hover:bg-slate-800 rounded transition-colors"
                       title="Copy Direct APK Link"
                     >
@@ -139,11 +140,11 @@ export const RecentReleasesTable: React.FC<RecentReleasesTableProps> = ({
 
                     {/* Download test */}
                     <a
-                      href={rel.directDownloadUrl || rel.apkUrl}
+                      href={toDirectDownloadUrl(rel.directDownloadUrl || rel.apkUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 rounded transition-colors"
-                      title="Download APK / Test Link"
+                      title="Direct Download APK / Test Link"
                     >
                       <Download className="w-3.5 h-3.5" />
                     </a>

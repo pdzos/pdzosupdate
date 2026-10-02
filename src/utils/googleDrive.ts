@@ -10,26 +10,54 @@ export interface GDriveAnalysis {
 
 /**
  * Extracts a Google Drive file ID from arbitrary Google Drive share URLs.
+ * Handles:
+ * - https://drive.google.com/file/d/{id}/view?usp=sharing
+ * - https://drive.google.com/file/d/{id}
+ * - https://drive.google.com/open?id={id}
+ * - https://drive.google.com/uc?id={id}&export=download
+ * - https://drive.google.com/uc?export=download&id={id}
+ * - https://drive.usercontent.google.com/download?id={id}
+ * - https://docs.google.com/file/d/{id}
+ * - Naked file IDs
  */
 export function extractGoogleDriveId(url: string): string | null {
   if (!url || typeof url !== 'string') return null;
 
   const trimmed = url.trim();
 
-  // Pattern 1: /file/d/{id}/view, /file/d/{id}
-  const fileDMatch = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]{25,})/);
+  // Pattern 1: /file/d/{id} or /d/{id}
+  const fileDMatch = trimmed.match(/\/(?:file\/)?d\/([a-zA-Z0-9_-]{25,})/);
   if (fileDMatch && fileDMatch[1]) return fileDMatch[1];
 
   // Pattern 2: id={id} in query params
   const idParamMatch = trimmed.match(/[?&]id=([a-zA-Z0-9_-]{25,})/);
   if (idParamMatch && idParamMatch[1]) return idParamMatch[1];
 
-  // Pattern 3: naked ID if user pasted just the ID
+  // Pattern 3: naked ID if user pasted just the Google Drive ID
   if (/^[a-zA-Z0-9_-]{25,45}$/.test(trimmed)) {
     return trimmed;
   }
 
   return null;
+}
+
+/**
+ * Universal transformer: converts ANY Google Drive sharing or preview link
+ * into a DIRECT download URL that immediately initiates file download
+ * without opening the Google Drive web preview page.
+ */
+export function toDirectDownloadUrl(url: string | null | undefined): string {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+
+  const fileId = extractGoogleDriveId(trimmed);
+  if (fileId) {
+    // &confirm=t bypasses virus scan confirmation warning on Google Drive
+    return `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`;
+  }
+
+  return trimmed;
 }
 
 /**
@@ -50,8 +78,11 @@ export function analyzeApkUrl(url: string): GDriveAnalysis {
 
   const trimmed = url.trim();
 
-  // Validate HTTPS protocol
-  if (!trimmed.startsWith('https://') && !trimmed.startsWith('http://')) {
+  // Check if naked Google Drive ID was pasted
+  const nakedId = /^[a-zA-Z0-9_-]{25,45}$/.test(trimmed);
+
+  // Validate HTTPS protocol if not a naked ID
+  if (!nakedId && !trimmed.startsWith('https://') && !trimmed.startsWith('http://')) {
     return {
       isValid: false,
       isGoogleDrive: false,
@@ -63,7 +94,7 @@ export function analyzeApkUrl(url: string): GDriveAnalysis {
     };
   }
 
-  const isGDrive = trimmed.includes('drive.google.com') || trimmed.includes('docs.google.com');
+  const isGDrive = nakedId || trimmed.includes('drive.google.com') || trimmed.includes('docs.google.com');
 
   if (isGDrive) {
     const fileId = extractGoogleDriveId(trimmed);
@@ -83,8 +114,8 @@ export function analyzeApkUrl(url: string): GDriveAnalysis {
       };
     }
 
-    const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
-    const usercontentUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download`;
+    const directDownloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}&confirm=t`;
+    const usercontentUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=t`;
 
     return {
       isValid: true,
@@ -92,11 +123,11 @@ export function analyzeApkUrl(url: string): GDriveAnalysis {
       fileId,
       directDownloadUrl,
       usercontentUrl,
-      warning: 'Important: Make sure file sharing is set to "Anyone with the link can view". Files >100MB may show a virus-scan confirmation screen on download.',
+      warning: null,
       tips: [
-        'Right click file in Google Drive -> Share -> General access: "Anyone with the link".',
-        'Direct download format generated automatically.',
-        'Google Drive has daily download quota limits if downloaded thousands of times simultaneously.',
+        'Direct download link active. Users will NOT be redirected to Google Drive web preview.',
+        'Make sure file sharing in Google Drive is set to "Anyone with the link can view".',
+        'Automatic virus scan confirmation bypass (&confirm=t) included.',
       ],
     };
   }
@@ -109,7 +140,7 @@ export function analyzeApkUrl(url: string): GDriveAnalysis {
     fileId: null,
     directDownloadUrl: trimmed,
     usercontentUrl: null,
-    warning: isApkExt ? null : 'Link does not end with .apk. Ensure the server sets application/vnd.android.package-archive header.',
-    tips: ['Direct HTTPS link detected. Android DownloadManager will attempt direct download.'],
+    warning: isApkExt ? null : 'Link does not end with .apk. Ensure the host provides a direct binary stream.',
+    tips: ['Direct HTTPS link detected. Android DownloadManager will download directly.'],
   };
 }

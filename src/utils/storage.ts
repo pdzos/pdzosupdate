@@ -1,5 +1,6 @@
 import { AppRecord, SiteSettings, ActivityEvent, HexOSUpdatePayload, ReleaseInfo } from '../types';
 import { INITIAL_APPS, INITIAL_SETTINGS, INITIAL_ACTIVITY, SAMPLE_DEMO_APPS } from '../data/initialData';
+import { toDirectDownloadUrl } from './googleDrive';
 
 const STORAGE_KEYS = {
   APPS: 'hexos_apps_data_v2', // v2 for clean empty slate
@@ -14,7 +15,29 @@ export function getStoredApps(): AppRecord[] {
       localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(INITIAL_APPS));
       return INITIAL_APPS;
     }
-    return JSON.parse(raw);
+    const apps: AppRecord[] = JSON.parse(raw);
+    // Sanitize any Google Drive links to direct download links automatically
+    let hasChanges = false;
+    const sanitized = apps.map(app => ({
+      ...app,
+      releases: (app.releases || []).map(rel => {
+        const direct = toDirectDownloadUrl(rel.directDownloadUrl || rel.apkUrl);
+        if (direct && direct !== rel.directDownloadUrl) {
+          hasChanges = true;
+          return {
+            ...rel,
+            directDownloadUrl: direct,
+            apkUrl: direct,
+          };
+        }
+        return rel;
+      })
+    }));
+
+    if (hasChanges) {
+      localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(sanitized));
+    }
+    return sanitized;
   } catch (err) {
     console.error('Failed reading apps from storage', err);
     return INITIAL_APPS;
@@ -60,11 +83,22 @@ export function getStoredSettings(): SiteSettings {
       return dynamicInitial;
     }
     const parsed = JSON.parse(raw);
-    // If the saved domain was the old dummy 'updates.hexos.in', automatically update it to the actual running domain!
-    if (!parsed.customDomain || parsed.customDomain === 'updates.hexos.in' || parsed.apiBaseUrl?.includes('updates.hexos.in')) {
-      parsed.customDomain = current.host;
-      parsed.apiBaseUrl = current.apiBaseUrl;
-      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(parsed));
+    // Auto-detect and sync current running domain
+    const isLiveBrowser = typeof window !== 'undefined' && !!window.location?.host;
+    if (isLiveBrowser) {
+      const isDummyOrOld = !parsed.customDomain ||
+        parsed.customDomain.includes('hexos.in') ||
+        parsed.customDomain.includes('localhost') ||
+        parsed.apiBaseUrl?.includes('hexos.in') ||
+        parsed.apiBaseUrl?.includes('localhost');
+
+      // If user is accessing via a live domain (e.g. pdzosupdate.pages.dev or custom domain)
+      // and not explicitly manually overridden, automatically sync:
+      if (isDummyOrOld || (parsed.customDomain !== current.host && !parsed.isManualDomainOverride)) {
+        parsed.customDomain = current.host;
+        parsed.apiBaseUrl = current.apiBaseUrl;
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(parsed));
+      }
     }
     return { ...INITIAL_SETTINGS, ...parsed };
   } catch (err) {
@@ -163,7 +197,7 @@ export function generatePermanentJsonPayload(app: AppRecord, channel?: string): 
     update: {
       version: targetRelease ? targetRelease.version : app.currentVersion,
       versionCode: targetRelease ? targetRelease.versionCode : app.currentVersionCode,
-      apkUrl: targetRelease ? (targetRelease.directDownloadUrl || targetRelease.apkUrl) : '',
+      apkUrl: targetRelease ? toDirectDownloadUrl(targetRelease.directDownloadUrl || targetRelease.apkUrl) : '',
       fileSize: targetRelease ? targetRelease.fileSize : '0 MB',
       minimumAndroid: targetRelease ? targetRelease.minimumAndroid : app.minimumAndroid,
       forceUpdate: targetRelease ? targetRelease.forceUpdate : false,

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppRecord, ReleaseInfo, ChannelType } from '../types';
 import { GoogleDriveValidator } from '../components/GoogleDriveValidator';
 import { validateVersionString } from '../utils/version';
+import { toDirectDownloadUrl } from '../utils/googleDrive';
 import { useToast } from '../components/Toast';
 import {
   Sparkles,
@@ -124,14 +125,16 @@ export const CreateReleasePage: React.FC<CreateReleasePageProps> = ({
       return;
     }
 
+    const effectiveDirectUrl = toDirectDownloadUrl(directDownloadUrl.trim() || apkUrl.trim());
+
     const newRelease: ReleaseInfo = {
       id: 'rel-' + Date.now(),
       appPackageName: currentApp.packageName,
       version: version.trim(),
       versionCode: Number(versionCode),
-      apkUrl: apkUrl.trim(),
+      apkUrl: effectiveDirectUrl,
       apkSource,
-      directDownloadUrl: directDownloadUrl.trim() || apkUrl.trim(),
+      directDownloadUrl: effectiveDirectUrl,
       fileSize: fileSize.trim() || '45 MB',
       minimumAndroid: Number(minimumAndroid),
       forceUpdate,

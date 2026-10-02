@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { AppRecord, ChannelType } from '../types';
 import { validatePackageName, validateVersionString } from '../utils/version';
+import { toDirectDownloadUrl } from '../utils/googleDrive';
+import { GoogleDriveValidator } from '../components/GoogleDriveValidator';
 import { useToast } from '../components/Toast';
-import { Link2, Copy, Check, PlusCircle, ArrowLeft, ShieldCheck, Sparkles, Smartphone, Eye } from 'lucide-react';
+import { Link2, Copy, Check, PlusCircle, ArrowLeft, ShieldCheck, Sparkles, Smartphone, Eye, HardDrive } from 'lucide-react';
 
 interface AddAppPageProps {
   apiBaseUrl: string;
@@ -30,6 +32,9 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
   const [minimumAndroid, setMinimumAndroid] = useState(26);
   const [defaultChannel, setDefaultChannel] = useState<ChannelType>('stable');
   const [copiedUrl, setCopiedUrl] = useState(false);
+
+  const [apkUrl, setApkUrl] = useState('');
+  const [fileSize, setFileSize] = useState('45 MB');
 
   // Live permanent update URL calculation
   const cleanedPackageName = packageName.trim().toLowerCase();
@@ -67,6 +72,8 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
       return;
     }
 
+    const effectiveDirectUrl = toDirectDownloadUrl(apkUrl.trim());
+
     const newApp: AppRecord = {
       id: 'app-' + Date.now(),
       name: name.trim(),
@@ -89,10 +96,10 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
           appPackageName: cleanedPackageName,
           version: initialVersion.trim(),
           versionCode: Number(initialVersionCode),
-          apkUrl: 'https://drive.google.com/',
-          apkSource: 'gdrive',
-          directDownloadUrl: 'https://drive.google.com/',
-          fileSize: '40 MB',
+          apkUrl: effectiveDirectUrl || '',
+          apkSource: effectiveDirectUrl.includes('drive.google.com') ? 'gdrive' : 'direct',
+          directDownloadUrl: effectiveDirectUrl || '',
+          fileSize: fileSize.trim() || '45 MB',
           minimumAndroid: Number(minimumAndroid),
           forceUpdate: false,
           channel: defaultChannel,
@@ -336,6 +343,31 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
                 <option value="alpha">Alpha</option>
               </select>
             </div>
+          </div>
+
+          {/* Initial APK Binary (Google Drive / Direct URL) */}
+          <div className="pt-4 border-t border-slate-800 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <HardDrive className="w-4 h-4 text-emerald-400" />
+                <span>Initial APK Download Link (Google Drive / Direct HTTPS)</span>
+              </label>
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] text-slate-400 font-mono">File Size:</label>
+                <input
+                  type="text"
+                  value={fileSize}
+                  onChange={(e) => setFileSize(e.target.value)}
+                  placeholder="e.g. 45 MB"
+                  className="w-24 px-2 py-1 bg-[#121422] border border-slate-700 rounded-lg text-xs font-mono text-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <GoogleDriveValidator
+              url={apkUrl}
+              onChange={setApkUrl}
+            />
           </div>
         </div>
 

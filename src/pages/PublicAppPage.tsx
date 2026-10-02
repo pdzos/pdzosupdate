@@ -1,5 +1,6 @@
 import React from 'react';
 import { AppRecord, ReleaseInfo } from '../types';
+import { toDirectDownloadUrl } from '../utils/googleDrive';
 import { Download, ArrowLeft, Calendar, HardDrive, Smartphone, ShieldCheck, CheckCircle2, ExternalLink } from 'lucide-react';
 import { HexLogo } from '../components/HexLogo';
 
@@ -95,7 +96,8 @@ export const PublicAppPage: React.FC<PublicAppPageProps> = ({ app, onBack }) => 
             {activeRelease && (
               <div className="flex flex-col gap-2 shrink-0">
                 <a
-                  href={activeRelease.directDownloadUrl || activeRelease.apkUrl}
+                  href={toDirectDownloadUrl(activeRelease.directDownloadUrl || activeRelease.apkUrl)}
+                  download={`${app.packageName}-v${activeRelease.version}.apk`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3.5 bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-2xl font-bold text-sm tracking-wide flex items-center justify-center gap-2.5 transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02] active:scale-[0.98]"
@@ -104,7 +106,7 @@ export const PublicAppPage: React.FC<PublicAppPageProps> = ({ app, onBack }) => 
                   <span>Download APK ({activeRelease.fileSize})</span>
                 </a>
                 <span className="text-[10px] text-center text-slate-400 font-mono">
-                  Hosted on Google Drive • Free & Direct
+                  Hosted on Google Drive • Direct Download
                 </span>
               </div>
             )}

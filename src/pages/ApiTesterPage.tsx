@@ -287,6 +287,7 @@ export const ApiTesterPage: React.FC<ApiTesterPageProps> = ({
                       )}
                       <a
                         href={testResult.payload.update.apkUrl}
+                        download={`${testResult.payload.app.packageName}-v${testResult.payload.update.version}.apk`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold tracking-wide flex items-center gap-1.5 shadow-md"
