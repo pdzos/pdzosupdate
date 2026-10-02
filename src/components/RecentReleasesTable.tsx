@@ -31,8 +31,8 @@ export const RecentReleasesTable: React.FC<RecentReleasesTableProps> = ({
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-800/80 bg-[#0e1019]">
-      <table className="w-full text-left text-xs">
+    <div className="overflow-x-auto rounded-xl sm:rounded-2xl border border-slate-800/80 bg-[#0e1019] -mx-1 sm:mx-0 shadow-lg">
+      <table className="w-full min-w-[640px] text-left text-xs">
         <thead className="bg-[#131622] text-slate-400 border-b border-slate-800 uppercase font-mono text-[10px] tracking-wider">
           <tr>
             <th className="py-3 px-4">App</th>

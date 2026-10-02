@@ -40,10 +40,10 @@ export const HexLogo: React.FC<HexLogoProps> = ({ size = 'md', withText = true, 
         <div className="flex flex-col">
           <div className="flex items-center gap-1.5 font-bold tracking-tight text-white leading-tight">
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent font-extrabold text-base md:text-lg">
-              HexOS
+              PdzOS
             </span>
             <span className="text-slate-300 font-semibold text-sm md:text-base">
-              Update Center
+              App Update
             </span>
             <span className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono uppercase bg-blue-500/10 text-blue-400 border border-blue-500/30 rounded">
               v1.0
@@ -53,7 +53,7 @@ export const HexLogo: React.FC<HexLogoProps> = ({ size = 'md', withText = true, 
             <span className="text-[11px] text-slate-400 font-mono">{subtitle}</span>
           ) : (
             <span className="text-[10px] text-slate-500 font-medium tracking-wide">
-              FREE CENTRAL APP MANAGER
+              CENTRAL ANDROID APP UPDATER
             </span>
           )}
         </div>

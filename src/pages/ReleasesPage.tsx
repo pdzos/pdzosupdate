@@ -120,7 +120,7 @@ export const ReleasesPage: React.FC<ReleasesPageProps> = ({
       <div className="p-4 rounded-xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-3 text-xs text-slate-300 leading-relaxed">
         <RotateCcw className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
         <div>
-          <span className="font-semibold text-blue-300">How Rollback Works in HexOS:</span> When you click{' '}
+          <span className="font-semibold text-blue-300">How Rollback Works in PdzOS:</span> When you click{' '}
           <code className="text-amber-400 font-mono bg-black/40 px-1 rounded">Rollback</code> next to an older build (e.g. 1.5.0),
           the permanent update endpoint is immediately updated to point to that version. The newer build (1.6.0) is{' '}
           <strong>never deleted</strong>; it remains archived in release history for when you're ready to re-activate it.

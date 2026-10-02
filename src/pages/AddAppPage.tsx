@@ -25,8 +25,8 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
   const [packageName, setPackageName] = useState('');
   const [icon, setIcon] = useState('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80');
   const [description, setDescription] = useState('');
-  const [developer, setDeveloper] = useState('HexOS Systems');
-  const [website, setWebsite] = useState('https://hexos.in');
+  const [developer, setDeveloper] = useState('PdzOS Systems');
+  const [website, setWebsite] = useState('https://pdzos.pages.dev');
   const [initialVersion, setInitialVersion] = useState('1.0.0');
   const [initialVersionCode, setInitialVersionCode] = useState(1);
   const [minimumAndroid, setMinimumAndroid] = useState(26);
@@ -236,7 +236,7 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
               type="text"
               value={developer}
               onChange={(e) => setDeveloper(e.target.value)}
-              placeholder="HexOS Systems"
+              placeholder="PdzOS Systems"
               className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -250,7 +250,7 @@ export const AddAppPage: React.FC<AddAppPageProps> = ({
               type="url"
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
-              placeholder="https://hexos.in"
+              placeholder="https://pdzos.pages.dev"
               className="w-full px-3.5 py-2.5 bg-[#121422] border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
             />
           </div>

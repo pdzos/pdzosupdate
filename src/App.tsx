@@ -15,6 +15,7 @@ import { isAuthenticated, logout } from './utils/auth';
 import { ToastProvider, useToast } from './components/Toast';
 import { Navbar } from './components/Navbar';
 import { Sidebar, NavigationTab } from './components/Sidebar';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { LoginScreen } from './components/LoginScreen';
 import { DashboardPage } from './pages/DashboardPage';
 import { AppsPage } from './pages/AppsPage';
@@ -224,8 +225,8 @@ function AppContent() {
           releasesCount={totalReleasesCount}
         />
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full min-w-0">
+        {/* Main Content Area: Responsive for Phone, Tablet, and Desktop */}
+        <main className="flex-1 p-3 sm:p-5 lg:p-8 max-w-7xl mx-auto w-full min-w-0 pb-24 lg:pb-8">
           {currentTab === 'dashboard' && (
             <DashboardPage
               apps={apps}
@@ -379,6 +380,16 @@ function AppContent() {
         title={jsonViewerState.title}
         data={jsonViewerState.data}
         filename={jsonViewerState.filename}
+      />
+
+      {/* Mobile Bottom Navigation for Phone Screens */}
+      <MobileBottomNav
+        currentTab={currentTab}
+        onSelectTab={(tab) => {
+          setCurrentTab(tab);
+          setReleaseTargetApp(null);
+        }}
+        appsCount={apps.length}
       />
     </div>
   );

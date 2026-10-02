@@ -51,7 +51,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
           <div className="text-center space-y-2 flex flex-col items-center">
             <HexLogo size="lg" withText={false} />
             <h1 className="text-xl font-black text-white tracking-tight pt-2">
-              HexOS Update Center
+              PdzOS App Update
             </h1>
             <p className="text-xs text-slate-400 font-mono">
               Restricted Developer Dashboard Access

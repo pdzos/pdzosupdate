@@ -82,10 +82,10 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Admin profile & Logout */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
           <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shadow-md ring-2 ring-slate-800">
-            H
+            P
           </div>
           <div className="hidden xl:flex flex-col text-left">
-            <span className="text-xs font-bold text-slate-200 leading-none">HexOS Admin</span>
+            <span className="text-xs font-bold text-slate-200 leading-none">PdzOS Admin</span>
             <span className="text-[10px] text-emerald-400 font-mono mt-0.5">Authenticated</span>
           </div>
 

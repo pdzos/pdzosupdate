@@ -50,7 +50,7 @@ export function generateGitHubRepoFiles(apps: AppRecord[]): ExportedFile[] {
   // 3. GitHub Actions workflow
   files.push({
     path: `.github/workflows/validate-updates.yml`,
-    content: `name: Validate HexOS Updates JSON
+    content: `name: Validate PdzOS Updates JSON
 
 on:
   push:
@@ -76,7 +76,7 @@ jobs:
 
       - name: Validate All JSON Files
         run: |
-          echo "Validating HexOS Update JSON structures..."
+          echo "Validating PdzOS Update JSON structures..."
           python3 -c "
           import json, glob, sys, re
 
@@ -98,7 +98,7 @@ jobs:
 
           if not success:
               sys.exit(1)
-          print('All HexOS metadata files passed validation!')
+          print('All PdzOS metadata files passed validation!')
           "
 `,
     description: 'Automated CI workflow to validate JSON syntax and schema integrity on push'
@@ -107,9 +107,9 @@ jobs:
   // 4. README.md for the GitHub repo
   files.push({
     path: `README.md`,
-    content: `# HexOS Update Metadata Repository
+    content: `# PdzOS App Update Metadata Repository
 
-Central, zero-cost update storage for HexOS Android applications.
+Central, zero-cost update storage for PdzOS Android applications.
 
 ## Directory Structure
 - \`apps/\`: Contains the permanent JSON files for each application.

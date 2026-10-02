@@ -65,7 +65,7 @@ export const ActivityPage: React.FC<ActivityPageProps> = ({
       <div className="p-4 rounded-xl bg-[#0e1019] border border-slate-800 text-xs text-slate-400 flex items-start gap-3">
         <Clock className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
         <p className="leading-relaxed">
-          <strong>Zero Database Guarantee:</strong> In accordance with the HexOS free architecture, audit entries are
+          <strong>Zero Database Guarantee:</strong> In accordance with the PdzOS free architecture, audit entries are
           recorded in browser local state and reflected in GitHub repository commit history. No paid database or background tracker is invoked.
         </p>
       </div>

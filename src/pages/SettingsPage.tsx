@@ -65,7 +65,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     const updated: SiteSettings = {
-      siteName: siteName.trim() || 'HexOS Update Center',
+      siteName: siteName.trim() || 'PdzOS App Update',
       customDomain: customDomain.trim(),
       apiBaseUrl: apiBaseUrl.trim(),
       githubRepo: githubRepo.trim(),
@@ -119,7 +119,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
   const handleExportBackup = () => {
     const backupData = {
       exportedAt: new Date().toISOString(),
-      architecture: 'HexOS Free Architecture',
+      architecture: 'PdzOS Free Architecture',
       apps,
       settings: {
         siteName,
@@ -133,7 +133,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({
       }
     };
     downloadFile(
-      `hexos-update-center-backup-${new Date().toISOString().split('T')[0]}.json`,
+      `pdzos-app-update-backup-${new Date().toISOString().split('T')[0]}.json`,
       JSON.stringify(backupData, null, 2)
     );
     showToast({ type: 'success', title: 'Backup Downloaded' });

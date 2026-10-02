@@ -15,7 +15,7 @@ export const DocsPage: React.FC<DocsPageProps> = ({ apiBaseUrl }) => {
     (typeof window !== 'undefined' ? `${window.location.origin}/api` : 'https://pdzosupdate.pages.dev/api')
   ).replace(/\/+$/, '');
 
-  const sampleEndpoint = `${currentApiBase}/com.hexos.zyra.json`;
+  const sampleEndpoint = `${currentApiBase}/com.pdzos.app.json`;
 
   const copySnippet = (code: string, key: string) => {
     navigator.clipboard.writeText(code);
@@ -24,7 +24,7 @@ export const DocsPage: React.FC<DocsPageProps> = ({ apiBaseUrl }) => {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const kotlinCode = `package com.hexos.zyra.update
+  const kotlinCode = `package com.pdzos.app.update
 
 import android.content.Context
 import android.content.Intent
@@ -32,14 +32,14 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.hexos.zyra.BuildConfig
+import com.pdzos.app.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-object HexOSUpdateChecker {
+object PdzOSUpdateChecker {
 
     // 1. YOUR PERMANENT UPDATE ENDPOINT (NEVER CHANGES)
     private const val UPDATE_ENDPOINT = "${sampleEndpoint}"
@@ -153,10 +153,10 @@ curl -s "${sampleEndpoint}" | jq .`;
       <div>
         <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-blue-400" />
-          <span>HexOS Developer & API Documentation</span>
+          <span>PdzOS Developer & API Documentation</span>
         </h1>
         <p className="text-xs text-slate-400 mt-0.5">
-          Everything you need to integrate HexOS permanent update endpoints into your Android applications.
+          Everything you need to integrate PdzOS permanent update endpoints into your Android applications.
         </p>
       </div>
 

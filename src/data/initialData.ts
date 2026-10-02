@@ -4,7 +4,7 @@ const defaultHost = typeof window !== 'undefined' && window.location?.host ? win
 const defaultOrigin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : 'https://pdzosupdate.pages.dev';
 
 export const INITIAL_SETTINGS: SiteSettings = {
-  siteName: 'HexOS Update Center',
+  siteName: 'PdzOS App Update',
   customDomain: defaultHost,
   apiBaseUrl: `${defaultOrigin}/api`,
   githubRepo: 'https://github.com/pdzos/pdzosupdate',

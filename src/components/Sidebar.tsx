@@ -104,7 +104,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <div className="flex flex-col h-full bg-[#0d0f18] border-r border-slate-800 text-slate-300">
       {/* Mobile top close button */}
       <div className="flex items-center justify-between p-4 lg:hidden border-b border-slate-800">
-        <span className="font-bold text-sm text-white">HexOS Navigation</span>
+        <span className="font-bold text-sm text-white">PdzOS Navigation</span>
         <button
           onClick={onCloseMobile}
           className="p-1 text-slate-400 hover:text-white"

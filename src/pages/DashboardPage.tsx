@@ -65,7 +65,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
             <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
               Every Android app uses a permanent URL that never changes (e.g.{' '}
               <code className="text-blue-400 font-mono px-1 py-0.5 bg-black/40 rounded border border-blue-900/50">
-                /api/{latestRelease?.appPackageName || 'com.hexos.zyra'}.json
+                /api/{latestRelease?.appPackageName || 'com.pdzos.app'}.json
               </code>
               ). APKs are hosted on Google Drive, metadata in GitHub JSON.
             </p>
@@ -165,7 +165,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
       {/* Quick Flow Visualization */}
       <div className="p-4 rounded-2xl bg-[#0b0d15] border border-slate-800 text-xs">
         <div className="flex items-center justify-between mb-3 text-slate-400 font-semibold uppercase font-mono text-[10px] tracking-wider">
-          <span>HexOS Update Architecture Flow</span>
+          <span>PdzOS Update Architecture Flow</span>
           <span className="text-emerald-400">STATUS: HEALTHY</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center">

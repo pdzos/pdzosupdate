@@ -68,7 +68,7 @@ export const UpdateUrlsPage: React.FC<UpdateUrlsPageProps> = ({
               <span>WRONG (Version in URL)</span>
             </div>
             <code className="block bg-[#090a0f] p-2 rounded text-[11px] text-rose-300 break-all border border-rose-950">
-              /api/com.hexos.zyra/1.6.0.json
+              /api/com.pdzos.app/1.6.0.json
             </code>
             <p className="text-[10px] text-slate-400 font-sans">
               Breaks client update check whenever you release v1.7.0. Client app has to be hardcoded with new URL.
@@ -82,7 +82,7 @@ export const UpdateUrlsPage: React.FC<UpdateUrlsPageProps> = ({
               <span>CORRECT (Permanent Endpoint)</span>
             </div>
             <code className="block bg-[#090a0f] p-2 rounded text-[11px] text-emerald-300 break-all border border-emerald-950">
-              /api/com.hexos.zyra.json
+              /api/com.pdzos.app.json
             </code>
             <p className="text-[10px] text-slate-400 font-sans">
               Permanent and immutable. When v1.7.0 is released, Android apps query the same URL and automatically detect the new APK!
