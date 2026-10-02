@@ -143,7 +143,7 @@ app-update/
 ### 1. How to Test & Run Locally
 ```bash
 # Enter directory
-cd "e:\Users\Administrator\Desktop\HexOS\app-update"
+cd hexos-update-center
 
 # Install dependencies (already installed)
 npm install
